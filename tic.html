@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tic Tac Toe Game</title>
+  <style>
+    body {
+      background: #e2fef7;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    h1 {
+      margin-top: 32px;
+      color: #174755;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 50vh;
+    }
+    .game {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      grid-template-rows: repeat(3, 60px);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .box {
+      width: 60px;
+      height: 60px;
+      font-size: 2em;
+      background: #f9ffde;
+      border: 2px solid #08232b;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #174755;
+      transition: background 0.2s;
+    }
+    .box:hover {
+      background: #ffddc1;
+    }
+    #msg {
+      font-size: 1.5em;
+      color: #c93d3d;
+      min-height: 32px;
+    }
+    #reset {
+      padding: 8px 20px;
+      font-size: 1em;
+      background: #174755;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tic Tac Toe</h1>
+  <div class="container">
+    <div class="game" id="game-board">
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+    </div>
+  </div>
+  <div id="msg"></div>
+  <button id="reset">Reset Game</button>
+  <script>
+    let boxes = document.querySelectorAll('.box');
+    let msg = document.getElementById('msg');
+    let resetBtn = document.getElementById('reset');
+    let currentPlayer = 'X';
+    let gameActive = true;
+
+    // Winning combinations: rows, columns, diagonals
+    const winPatterns = [
+      [0,1,2], [3,4,5], [6,7,8], // Rows
+      [0,3,6], [1,4,7], [2,5,8], // Columns
+      [0,4,8], [2,4,6]           // Diagonals
+    ];
+
+    function checkWinner() {
+      for (let pattern of winPatterns) {
+        const [a, b, c] = pattern;
+        if (
+          boxes[a].innerText &&
+          boxes[a].innerText === boxes[b].innerText &&
+          boxes[b].innerText === boxes[c].innerText
+        ) {
+          return boxes[a].innerText;
+        }
+      }
+      return null;
+    }
+
+    function handleClick(e) {
+      if (!gameActive || e.target.innerText) return;
+      e.target.innerText = currentPlayer;
+      let winner = checkWinner();
+      if (winner) {
+        msg.innerText = `Winner: ${winner}!`;
+        gameActive = false;
+        return;
+      }
+      if ([...boxes].every(box => box.innerText)) {
+        msg.innerText = 'Draw!';
+        gameActive = false;
+        return;
+      }
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      msg.innerText = `Turn: ${currentPlayer}`;
+    }
+
+    boxes.forEach(box => box.addEventListener('click', handleClick));
+
+    resetBtn.addEventListener('click', () => {
+      boxes.forEach(box => box.innerText = '');
+      currentPlayer = 'X';
+      gameActive = true;
+      msg.innerText = 'Turn: X';
+    });
+
+    msg.innerText = 'Turn: X';
+  </script>
+</body>
+</html>
